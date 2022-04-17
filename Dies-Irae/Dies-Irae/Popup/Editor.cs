@@ -12,13 +12,14 @@ namespace Dies_Irae.Popup
 {
     public partial class Editor : Form
     {
-        BackgroundWorker loader = new BackgroundWorker();
-        Controler.Manager manager = new Controler.Manager();
-        private List<string> content = new List<string>();
+        private BackgroundWorker loader = new BackgroundWorker();
+        private Controler.Manager manager = new Controler.Manager();
+        private Emma.Emma.Editor.Dump content = null;
         private Dictionary<string, string> result = new Dictionary<string, string>();
         private List<string> types = new List<string>();
+        private Emma.Emma.Editor.Scan emma = new Emma.Emma.Editor.Scan();
 
-        public Editor(List<string> input_content)
+        public Editor(Emma.Emma.Editor.Dump input_content)
         {
             InitializeComponent();
             InitializeWorkers();
@@ -32,99 +33,85 @@ namespace Dies_Irae.Popup
             loader.DoWork += new DoWorkEventHandler(load);
         }
 
-        private string remove_at(string line, int index)
-        {
-            string buffer = "";
-
-            for (int i = 0; i < line.Length; i++)
-            {
-                if (i != index)
-                {
-                    buffer += line[i];
-                }
-            }
-
-            return (buffer);
-        }
-
-        private void interpreter(string line)
-        {
-            string[] splitted = null;
-            string new_line = "";
-            bool decode = true;
-
-            if (line.Length > 2)
-            {
-                line = remove_at(line, 0);
-                line = remove_at(line, line.Length - 1);
-            }
-            line = line.Replace("0x", "=");
-            splitted = line.Split('=');
-            decode = (splitted[0] != Editors.Tags.magic_tag);
-            for (int i = 1; i < splitted.Length; i++)
-            {
-                if (splitted[i] != string.Empty)
-                {
-                    if (Editors.Tags.all.Contains(splitted[i]) == false && decode == true)
-                    {
-                        new_line += (char)(Int32.Parse(splitted[i]));
-                    }
-                    else
-                    {
-                        new_line += splitted[i];
-                    }
-                }
-            }
-            if (result.ContainsKey(splitted[0]) == false)
-                result[splitted[0]] = new_line;
-            else
-                types.Add(new_line);
-        }
-
         private void load(object sender, EventArgs e)
         {
-            foreach (string line in content)
-            {
-                if (line != null)
-                    interpreter(line);
-            }
+            load_strings();
+            load_symbols();
+            load_timestamp();
+            load_magic();
+            load_machine();
+            load_version();
+            load_sections();
+        }
 
-            foreach (KeyValuePair<string, string> item in result)
+        private void load_magic()
+        {
+            foreach (Emma.Emma.Editor.Item item in content.magic)
             {
-                if (item.Key == Editors.Tags.magic_tag)
-                {
-                    manager.set_textbox(box_magic_number, item.Value);
-                } else if (item.Key == Editors.Tags.file_bytes_tag)
-                {
-                    manager.set_textbox(box_total_file_bytes, item.Value);
-                } else if (item.Key == Editors.Tags.total_strings_tag)
-                {
-                    manager.set_textbox(box_total_strings_tag, item.Value);
-                }
-                else if (item.Key == Editors.Tags.file_path)
-                {
-                    manager.set_textbox(box_file_path, item.Value);
-                }
-            }
-            foreach (string data in types)
-            {
-                manager.add_richtext(box_view, data);
+                manager.set_textbox(box_magic_number, emma.beautify_magic(item.content));
             }
         }
 
-        private void button_exit_Click(object sender, EventArgs e)
+        private void load_strings()
         {
-            Close();
+            foreach (Emma.Emma.Editor.Item item in content.strings)
+            {
+                manager.add_listview(box_view_data, emma.get_offset(item.offset), emma.decode_string(item.content));
+            }
+        }
+
+        private void load_machine()
+        {
+            foreach (Emma.Emma.Editor.Item item in content.machine)
+            {
+                manager.set_textbox(box_machine, emma.beautify_magic(item.content));
+            }
+        }
+
+        private void load_sections()
+        {
+            foreach (Emma.Emma.Editor.Item item in content.sections)
+            {
+                manager.set_textbox(box_sections, emma.beautify_magic(item.content));
+            }
+        }
+
+        private void load_timestamp()
+        {
+            foreach (Emma.Emma.Editor.Item item in content.timestamp)
+            {
+                manager.set_textbox(box_timestamp, emma.beautify_magic(item.content));
+            }
+        }
+
+        private void load_symbols()
+        {
+            foreach (Emma.Emma.Editor.Item item in content.symbols)
+            {
+                manager.set_textbox(box_symbols, emma.get_string(item.content));
+            }
+        }
+
+        private void load_version()
+        {
+            foreach (Emma.Emma.Editor.Item item in content.version)
+            {
+                manager.add_listview(view_version, emma.get_offset(item.offset), emma.decode_string(item.content));
+            }
         }
 
         private void Editor_Shown(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+            box_view_data.Visible = false;
             loader.RunWorkerAsync();
 
             while (loader.IsBusy == true)
             {
                 Application.DoEvents();
             }
+            box_view_data.Visible = true;
+            Cursor.Current = Cursors.Default;
         }
 
         private void button_exit_Click_1(object sender, EventArgs e)

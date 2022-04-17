@@ -97,7 +97,7 @@ namespace Dies_Irae
             this.bunifuCards2.Controls.Add(this.button_select_dump);
             this.bunifuCards2.Controls.Add(this.button_editor);
             this.bunifuCards2.LeftSahddow = false;
-            this.bunifuCards2.Location = new System.Drawing.Point(12, 183);
+            this.bunifuCards2.Location = new System.Drawing.Point(12, 170);
             this.bunifuCards2.Name = "bunifuCards2";
             this.bunifuCards2.RightSahddow = true;
             this.bunifuCards2.ShadowDepth = 20;
@@ -294,9 +294,9 @@ namespace Dies_Irae
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(12, 290);
+            this.pictureBox1.Location = new System.Drawing.Point(12, 275);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(314, 111);
+            this.pictureBox1.Size = new System.Drawing.Size(314, 126);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
@@ -311,7 +311,7 @@ namespace Dies_Irae
             this.bunifuCards1.Controls.Add(this.button_browse);
             this.bunifuCards1.Controls.Add(this.button_scan);
             this.bunifuCards1.LeftSahddow = false;
-            this.bunifuCards1.Location = new System.Drawing.Point(12, 104);
+            this.bunifuCards1.Location = new System.Drawing.Point(12, 91);
             this.bunifuCards1.Name = "bunifuCards1";
             this.bunifuCards1.RightSahddow = true;
             this.bunifuCards1.ShadowDepth = 20;
@@ -611,16 +611,16 @@ namespace Dies_Irae
             // label_version
             // 
             this.label_version.AutoSize = true;
-            this.label_version.Location = new System.Drawing.Point(50, 271);
+            this.label_version.Location = new System.Drawing.Point(50, 256);
             this.label_version.Name = "label_version";
             this.label_version.Size = new System.Drawing.Size(31, 13);
             this.label_version.TabIndex = 55;
-            this.label_version.Text = "1.1.0";
+            this.label_version.Text = "1.3.0";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 271);
+            this.label4.Location = new System.Drawing.Point(9, 256);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 13);
             this.label4.TabIndex = 54;
@@ -635,7 +635,7 @@ namespace Dies_Irae
             this.bunifuShapes1.FillColor = System.Drawing.Color.Transparent;
             this.bunifuShapes1.FillShape = false;
             this.bunifuShapes1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(198)))), ((int)(((byte)(197)))));
-            this.bunifuShapes1.Location = new System.Drawing.Point(87, 274);
+            this.bunifuShapes1.Location = new System.Drawing.Point(87, 259);
             this.bunifuShapes1.Name = "bunifuShapes1";
             this.bunifuShapes1.Shape = Bunifu.UI.WinForms.BunifuShapes.Shapes.Line;
             this.bunifuShapes1.Sides = 3;
@@ -717,6 +717,7 @@ namespace Dies_Irae
             this.button_exit.Location = new System.Drawing.Point(279, 7);
             this.button_exit.Margin = new System.Windows.Forms.Padding(10);
             this.button_exit.Name = "button_exit";
+            this.button_exit.Padding = new System.Windows.Forms.Padding(10);
             this.button_exit.Size = new System.Drawing.Size(25, 25);
             this.button_exit.TabIndex = 0;
             this.button_exit.UseVisualStyleBackColor = false;

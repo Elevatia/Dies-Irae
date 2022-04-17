@@ -209,5 +209,24 @@ namespace Dies_Irae.Controler
                 controller.Text = value;
             }));
         }
+
+        public void add_listview(ListView controller, string offset, string value)
+        {
+            string[] arr = { offset, value };
+
+            controller.Invoke(new MethodInvoker(delegate
+            {
+                controller.Items.Add(new ListViewItem(arr));
+            }));
+        }
+
+        public void lock_listview(ListView controller, bool value)
+        {
+            controller.Invoke(new MethodInvoker(delegate
+            {
+                if (controller.Enabled != value)
+                    controller.Enabled = value;
+            }));
+        }
     }
 }

@@ -17,8 +17,8 @@ namespace Dies_Irae
         BackgroundWorker dumper = new BackgroundWorker();
         Controler.Manager manager = new Controler.Manager();
         Popup.Editor editor = null;
-        Search.Search searcher = null;
         Popup.Settings settings = null;
+        Emma.Emma.Editor.Scan emma = null;
 
         Profile.Settings.Rootobject profile = null;
 
@@ -79,10 +79,8 @@ namespace Dies_Irae
             manager.button(button_editor, false);
             manager.button(button_select_dump, false);
 
-            searcher = new Search.Search(select_file.FileName, profile);
-            searcher.load();
-            searcher.reset();
-            editor = new Popup.Editor(searcher.informations.resume);
+            emma = new Emma.Emma.Editor.Scan(profile, File.ReadAllBytes(select_file.FileName).ToList());
+            editor = new Popup.Editor(emma.dump);
 
             manager.button(button_scan, true);
             manager.button(button_browse, true);
@@ -113,13 +111,28 @@ namespace Dies_Irae
             manager.button(button_select_dump, false);
 
             // NDFF: Neo Data File Format
-            File.WriteAllLines($"dump\\{date}.ndff", searcher.informations.resume);
+            WriteToBinaryFile<Emma.Emma.Editor.Dump>($"dump\\{date}.ndff", emma.dump);
 
             manager.button(button_browse, true);
             manager.button(button_scan, true);
             manager.button(button_dump, true);
             manager.button(button_editor, true);
             manager.button(button_select_dump, true);
+        }
+
+        public void WriteToBinaryFile<T>(string filePath, T objectToWrite)
+        {
+            Stream stream = File.Open(filePath, FileMode.Create);
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            binaryFormatter.Serialize(stream, objectToWrite);
+        }
+
+        public T ReadFromBinaryFile<T>(string filePath)
+        {
+            Stream stream = File.Open(filePath, FileMode.Open);
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            
+            return (T)binaryFormatter.Deserialize(stream);
         }
 
         private void button_dump_Click(object sender, EventArgs e)
@@ -159,16 +172,19 @@ namespace Dies_Irae
 
         private void button_select_dump_Click(object sender, EventArgs e)
         {
-            List<string> data = null;
-
             if (select_dump_event() == true)
             {
                 manager.button(button_editor, true);
-                editor = new Popup.Editor(File.ReadAllLines(select_dump.FileName).ToList<string>());
+                editor = new Popup.Editor(
+                    ReadFromBinaryFile<Emma.Emma.Editor.Dump>(select_dump.FileName)
+                );
             }
             else
             {
-                if (button_editor.Enabled == true)
+                if (emma != null)
+                {
+                    editor = new Popup.Editor(emma.dump);
+                } else if (button_editor.Enabled == true)
                 {
                     manager.button(button_editor, false);
                 }
